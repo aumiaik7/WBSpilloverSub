@@ -1,0 +1,10 @@
+INSERT INTO "tblUpazilla" VALUES('1','1','1. Dumuria');
+INSERT INTO "tblUpazilla" VALUES('1','2','2. Paikgacha');
+INSERT INTO "tblUpazilla" VALUES('2','3','3. Abhoynagar');
+INSERT INTO "tblUpazilla" VALUES('2','4','4. Monirampur');
+INSERT INTO "tblUpazilla" VALUES('3','1','30');
+INSERT INTO "tblUpazilla" VALUES('3','2','27/1');
+INSERT INTO "tblUpazilla" VALUES('3','3','28/1');
+INSERT INTO "tblUpazilla" VALUES('4','4','43/2D');
+INSERT INTO "tblUpazilla" VALUES('4','5','46');
+INSERT INTO "tblUpazilla" VALUES('4','6','47/3');

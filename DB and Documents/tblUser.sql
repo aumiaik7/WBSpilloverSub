@@ -1,0 +1,14 @@
+INSERT INTO "tblUser" VALUES('N06771','Dr. Md. Mahbubur Rahman',NULL,'6771','Y');
+INSERT INTO "tblUser" VALUES('N08142','Dr. Nuhu Amin',NULL,'8142','Y');
+INSERT INTO "tblUser" VALUES('N04421','Md. Nuruzzaman',NULL,'4421','Y');
+INSERT INTO "tblUser" VALUES('N05958','Farhana Akand',NULL,'5958','Y');
+INSERT INTO "tblUser" VALUES('N08081','Md.  Ruhul  Amin',NULL,'8081','Y');
+INSERT INTO "tblUser" VALUES('N05965','Md.  Monjurul  Haque',NULL,'5965','Y');
+INSERT INTO "tblUser" VALUES('N05976','Mohammad  Saiful  Islam',NULL,'5976','Y');
+INSERT INTO "tblUser" VALUES('N06697','Md.  Masud  Rana',NULL,'6697','Y');
+INSERT INTO "tblUser" VALUES('N07693','Md.  Saidur  Rahman',NULL,'7693','Y');
+INSERT INTO "tblUser" VALUES('N08821','Md.  Moznu  Mia',NULL,'8821','Y');
+INSERT INTO "tblUser" VALUES('N07698','Roksana Pervin','','7698','Y');
+INSERT INTO "tblUser" VALUES('N06466','Ashrafi Sultana','','6466','Y');
+INSERT INTO "tblUser" VALUES('N06717','Nargis Sultana','','6717','Y');
+INSERT INTO "tblUser" VALUES('admin','Admin','','1','Y');
