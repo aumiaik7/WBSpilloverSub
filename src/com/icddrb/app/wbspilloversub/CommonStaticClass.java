@@ -69,6 +69,13 @@ public class CommonStaticClass {
     public static int g5113a=0;
     public static String childID = "";
     public static String priviousID = "";
+    
+    public static String q4001 = "",q4002= "",q4006= "",q4007= "",
+    					 q4008= "",q4009= "",q4010= "",q4011= "",
+    					 q4012= "",q4013= "",q4014= "",q4015= "",
+    					 q4016= "",q101= "",q013= "",q013a= "",q014 = "";
+    public static int q102=0;
+    
    
 	
 

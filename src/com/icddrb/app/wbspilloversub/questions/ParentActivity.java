@@ -15508,7 +15508,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				 * "Invalid Cluster ID", "Invalid cluster id."); return; }
 				 */
 				CommonStaticClass.dataId = cluster + mother + hhID;
-				CommonStaticClass.priviousID = cluster + mother;
+				CommonStaticClass.priviousID = cluster + mother + hhID;
 				CommonStaticClass.ClusterId = cluster;
 
 				if (CommonStaticClass.dataId.length() > 0) {
@@ -15654,10 +15654,10 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				 * + CommonStaticClass.dataId.subSequence(0, 5) + "'"
 				 */
 
-				sql = "Select * from  tblOldMainQues Where dataid='"
+				sql = "Select * from  frmrtblMainQues Where dataid='"
 						+ CommonStaticClass.priviousID + "'"
 				/* + "' and AssetID = '" + CommonStaticClass.AssetID + "'" */;
-				String sqlSc, sqlMc, sqlMod13, sqlMod61, sqlLNS, sqlHandwash, sqlvaccine;
+				String sqlSc, sqlHHcen, sqlMod13, sqlMod61, sqlLNS, sqlHandwash, sqlvaccine;
 
 				cursor = dbHelper.getQueryCursor(sql);
 
@@ -15703,19 +15703,47 @@ public class ParentActivity extends BaseActivity implements FormListener {
 					 * CommonStaticClass.userSpecificId + "','" + entryDate +
 					 * "')";
 					 */
-					String sqlupdate = "Insert into tblMainQues (dataid,clusterid,q4014,motherid,houseid,uniqueid, EntryBy, EntryDate, AssetId,VersionNo) values('"
+					loadPrevdata();
+					String sqlupdate = "Insert into tblMainQues (dataid,q4001,q4002,q4006,q4007,q4008," +
+							"q4009,q4010,q4011,q4012,q4013,q4014,q4015,q4016,q101,q102,q013,q013a,q014," +
+							"EntryBy, EntryDate, AssetId,VersionNo) values('"
 							+ CommonStaticClass.dataId
 							+ "','"
-							+ CommonStaticClass.ClusterId
+							+ CommonStaticClass.q4001
+							+ "','"					
+							+ CommonStaticClass.q4002
+							+ "','"					
+							+ CommonStaticClass.q4006
+							+ "','"					
+							+ CommonStaticClass.q4007
+							+ "','"					
+							+ CommonStaticClass.q4008
+							+ "','"					
+							+ CommonStaticClass.q4009
+							+ "','"					
+							+ CommonStaticClass.q4010
+							+ "','"					
+							+ CommonStaticClass.q4011
 							+ "','"
-							+ CommonStaticClass.ClusterId
+							+ CommonStaticClass.q4012
+							+ "','"					
+							+ CommonStaticClass.q4013
+							+ "','"					
+							+ CommonStaticClass.q4014
+							+ "','"					
+							+ CommonStaticClass.q4015
+							+ "','"					
+							+ CommonStaticClass.q4016
+							+ "','"	
+							+ CommonStaticClass.q101
 							+ "','"
-							+ mother
+							+ CommonStaticClass.q102
 							+ "','"
-							+ hhID
+							+ CommonStaticClass.q013
 							+ "','"
-							+ CommonStaticClass.ClusterId
-							+ mother
+							+ CommonStaticClass.q013a
+							+ "','"
+							+ CommonStaticClass.q014
 							+ "','"
 							+ CommonStaticClass.userSpecificId
 							+ "','"
@@ -15723,8 +15751,21 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							+ "','"
 							+ CommonStaticClass.AssetID
 							+ "','" + CommonStaticClass.VersionNo + "')";
+					
+					loadPrevHHCensusData();
+					loadPrevChildInfoData();
+					
+//					sqlHHcen = "Insert into tblHHCensus values('"
+//							+ CommonStaticClass.dataId
+//							+ "','"
+//							+ CommonStaticClass.userSpecificId
+//							+ "','"
+//							+ entryDate
+//							+ "','"
+//							+ CommonStaticClass.AssetID
+//							+ "')";
 
-					sqlMc = "Insert into tblMainQuesMc (dataid, EntryBy, EntryDate, AssetId) values('"
+/*					sqlMc = "Insert into tblMainQuesMc (dataid, EntryBy, EntryDate, AssetId) values('"
 							+ CommonStaticClass.dataId
 							+ "','"
 							+ CommonStaticClass.userSpecificId
@@ -15798,7 +15839,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							+ "','"
 							+ CommonStaticClass.AssetID
 							+ "')";
-					/*
+*/					/*
 					 * sqlLNS =
 					 * "Insert into tblLNS (dataid, EntryBy, EntryDate,AssetId) values('"
 					 * + CommonStaticClass.dataId + "','" +
@@ -15807,7 +15848,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 					 */
 
 					if (dbHelper.executeDMLQuery(sqlupdate)
-							&& dbHelper.executeDMLQuery(sqlMc)
+						/*	&& dbHelper.executeDMLQuery(sqlMc)
 							&& dbHelper.executeDMLQuery(sqlSc)
 							&& dbHelper.executeDMLQuery(sqlHandwash)
 
@@ -15816,7 +15857,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							&& dbHelper.executeDMLQuery(sqlvaccination)
 
 							&& dbHelper.executeDMLQuery(sqlModel1)
-							&& dbHelper.executeDMLQuery(sqlspillover)) {
+							&& dbHelper.executeDMLQuery(sqlspillover)*/) {
 
 						CommonStaticClass.mode = CommonStaticClass.EDITMODE;
 						CommonStaticClass.findOutNextSLNo(
@@ -16657,7 +16698,9 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 		// else
 
-		if (qName.equalsIgnoreCase("c301a") || qName.equalsIgnoreCase("q201")
+		if (
+				//qName.equalsIgnoreCase("c301a")
+				 qName.equalsIgnoreCase("q201")
 				|| qName.equalsIgnoreCase("q202")
 				|| qName.equalsIgnoreCase("q203")
 
@@ -16986,9 +17029,10 @@ public class ParentActivity extends BaseActivity implements FormListener {
 			 */
 			// else
 			// added later 7 aug 2012
-			if (qName.equalsIgnoreCase("c306")
-					|| qName.equalsIgnoreCase("c301a")
-					|| qName.equalsIgnoreCase("q201")
+			if (
+//					qName.equalsIgnoreCase("c306")
+//					|| qName.equalsIgnoreCase("c301a")
+					 qName.equalsIgnoreCase("q201")
 					|| qName.equalsIgnoreCase("c615s")
 					|| qName.equalsIgnoreCase("q202")
 					|| qName.equalsIgnoreCase("q203")
@@ -17416,7 +17460,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		if (qName.equalsIgnoreCase("g5116") || qName.equalsIgnoreCase("g51211")
 				|| qName.equalsIgnoreCase("g52314")
 				|| qName.equalsIgnoreCase("g52316")
-				|| qName.equalsIgnoreCase("c304")
+//				|| qName.equalsIgnoreCase("c304")
 				|| qName.equalsIgnoreCase("q213")
 				|| qName.equalsIgnoreCase("q204"))
 			sql += " where dataid='" + CommonStaticClass.dataId
@@ -19289,7 +19333,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 							int iCount = 0;
 							iCount = Integer.parseInt(CommonStaticClass
-									.getSkip("q014", "tblModule1", dbHelper));
+									.getSkip("q014", "tblMainQues", dbHelper));
 							if (iCount == 1) {
 								CommonStaticClass.findOutNextSLNo(qName,
 										"q807aa");
@@ -19323,7 +19367,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 							int iCount = 0;
 							iCount = Integer.parseInt(CommonStaticClass
-									.getSkip("q014", "tblModule1", dbHelper));
+									.getSkip("q014", "tblMainQues", dbHelper));
 							if (iCount == 1) {
 								CommonStaticClass.findOutNextSLNo(qName,
 										"q807aa");
@@ -19353,7 +19397,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						} else {
 							int iCount = 0;
 							iCount = Integer.parseInt(CommonStaticClass
-									.getSkip("q014", "tblModule1", dbHelper));
+									.getSkip("q014", "tblMainQues", dbHelper));
 							if (iCount == 1) {
 								CommonStaticClass.findOutNextSLNo(qName,
 										"q807aa");
@@ -19378,7 +19422,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						} else {
 							int iCount = 0;
 							iCount = Integer.parseInt(CommonStaticClass
-									.getSkip("q014", "tblModule1", dbHelper));
+									.getSkip("q014", "tblMainQues", dbHelper));
 							if (iCount == 1) {
 								CommonStaticClass.findOutNextSLNo(qName,
 										"q807aa");
@@ -21498,7 +21542,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 		if (qName.equalsIgnoreCase("q013a")) {
 			int Count36 = Integer.parseInt(CommonStaticClass.getSkip("q013",
-					"tblModule1", dbHelper));
+					"tblMainQues", dbHelper));
 			if (Integer.parseInt(qAns) < Count36) {
 				CommonStaticClass
 						.showMyAlert(con, "Not Correct",
@@ -23405,13 +23449,13 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				// //|| qName.equalsIgnoreCase("n1407a")
 				// || qName.equalsIgnoreCase("n1402")
 				// || qName.equalsIgnoreCase("n1401")
-				|| qName.equalsIgnoreCase("c305_4")
-				|| qName.equalsIgnoreCase("c305_3")
-				|| qName.equalsIgnoreCase("c305_2")
-				|| qName.equalsIgnoreCase("c305_1")
-				|| qName.equalsIgnoreCase("c303")
-				|| qName.equalsIgnoreCase("c302")
-				|| qName.equalsIgnoreCase("c301")
+//				|| qName.equalsIgnoreCase("c305_4")
+//				|| qName.equalsIgnoreCase("c305_3")
+//				|| qName.equalsIgnoreCase("c305_2")
+//				|| qName.equalsIgnoreCase("c305_1")
+//				|| qName.equalsIgnoreCase("c303")
+//				|| qName.equalsIgnoreCase("c302")
+//				|| qName.equalsIgnoreCase("c301")
 				|| qName.equalsIgnoreCase("qdir")
 
 		)
@@ -23655,13 +23699,13 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						// || qName.equalsIgnoreCase("n1402")
 						// || qName.equalsIgnoreCase("n1401")
 
-						|| qName.equalsIgnoreCase("c305_4")
-						|| qName.equalsIgnoreCase("c305_3")
-						|| qName.equalsIgnoreCase("c305_2")
-						|| qName.equalsIgnoreCase("c305_1")
-						|| qName.equalsIgnoreCase("c303")
-						|| qName.equalsIgnoreCase("c302")
-						|| qName.equalsIgnoreCase("c301")
+//						|| qName.equalsIgnoreCase("c305_4")
+//						|| qName.equalsIgnoreCase("c305_3")
+//						|| qName.equalsIgnoreCase("c305_2")
+//						|| qName.equalsIgnoreCase("c305_1")
+//						|| qName.equalsIgnoreCase("c303")
+//						|| qName.equalsIgnoreCase("c302")
+//						|| qName.equalsIgnoreCase("c301")
 						|| qName.equalsIgnoreCase("qdir")
 
 				)
@@ -28944,17 +28988,17 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 					// ///////////////////////////
 
-					else if (qName.equalsIgnoreCase("c305_4")) {
+					/*else if (qName.equalsIgnoreCase("c305_4")) {
 
 						int total_child = 0;
 						int entry_child = 0;
 						CommonStaticClass.childID = "";
-						/*
+						s
 						 * String v = getSkip("q4019c+q4019d+q4019b",
 						 * "tblMainQues"); if (v.length() > 0 &&
 						 * !v.equalsIgnoreCase("null")) { total_child =
 						 * Integer.parseInt(v); }
-						 */
+						 
 
 						String sqlD = "select  count (*) as Total from tblChildInformation where  dataid= '"
 								+ CommonStaticClass.dataId
@@ -29042,7 +29086,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							CommonStaticClass.nextQuestion(ParentActivity.this);
 						}
 
-					}
+					}*/
 
 					else {
 						/*
@@ -29255,7 +29299,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		infoText.requestFocus();
 		String sql = "";
 		if (qName.equalsIgnoreCase("g51212aOther")
-				|| qName.equalsIgnoreCase("c302_other")
+//				|| qName.equalsIgnoreCase("c302_other")
 				|| qName.equalsIgnoreCase("n1402Other")
 				|| qName.equalsIgnoreCase("n1416Other")
 				|| qName.equalsIgnoreCase("n1418Other")
@@ -29304,7 +29348,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 					|| PriveData.trim().equalsIgnoreCase("-1")
 					|| PriveData.trim().equalsIgnoreCase("null")) {
 				sql = "Select " + qName
-						+ " from tblOldMainQues  where dataid='"
+						+ " from frmrtblMainQues  where dataid='"
 						+ CommonStaticClass.dataId.subSequence(0, 5) + "'";
 			} else {
 				sql = "Select "
@@ -29426,7 +29470,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 			String sql = "";
 			if (qName.equalsIgnoreCase("g51212aOther")
 					|| qName.equalsIgnoreCase("g51213aOther")
-					|| qName.equalsIgnoreCase("c302_other")) {
+//					|| qName.equalsIgnoreCase("c302_other")
+					) {
 				sql = "UPDATE "
 						+ CommonStaticClass.questionMap.get(
 								CommonStaticClass.currentSLNo).getTablename()
@@ -29990,8 +30035,10 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						CommonStaticClass.currentSLNo).getTablename()
 				+ " where dataid='" + CommonStaticClass.dataId + "'";
 
-		if (qName.equalsIgnoreCase("c304") || qName.equalsIgnoreCase("c306")
-				|| qName.equalsIgnoreCase("q213")
+		if (
+				//qName.equalsIgnoreCase("c304") 
+//				 qName.equalsIgnoreCase("c306")
+				 qName.equalsIgnoreCase("q213")
 				|| qName.equalsIgnoreCase("q204")
 				|| qName.equalsIgnoreCase("q201")
 				|| qName.equalsIgnoreCase("q202")
@@ -30794,7 +30841,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 			i++;
 		}
 		if (qName.equalsIgnoreCase("q204") || qName.equalsIgnoreCase("q213")
-				|| qName.equalsIgnoreCase("c304")|| qName.equalsIgnoreCase("c306"))
+//				|| qName.equalsIgnoreCase("c304")|| qName.equalsIgnoreCase("c306")
+				)
 
 		{
 			sql += "where dataid='" + CommonStaticClass.dataId
@@ -30969,7 +31017,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 					 * CommonStaticClass.nextQuestion(ParentActivity.this); }
 					 * else
 					 */
-					CommonStaticClass.findOutNextSLNo(qName, "qd");
+					CommonStaticClass.findOutNextSLNo(qName, CommonStaticClass.questionMap.get(
+							CommonStaticClass.currentSLNo).getQnext1());
 					CommonStaticClass.nextQuestion(ParentActivity.this);
 				}
 
@@ -35344,7 +35393,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 		// //////////////////////////////////////////////
 		if (qName.equalsIgnoreCase("sp19")) {
-			String allSQL = "Select dataid, q4010, q4011 from  tblOldMainQues Where SUBSTR(dataid, 1,3) ='"
+			String allSQL = "Select dataid, q4010, q4011 from  frmrtblMainQues Where SUBSTR(dataid, 1,3) ='"
 					+ CommonStaticClass.dataId.subSequence(0, 3)
 					+ "' order by CAST(dataid as decimal)";
 			int cunt = 0;
@@ -40022,7 +40071,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		IDList = new ArrayList<String>();
 		IDList.add(".....Select HH No.....");
 
-		String sqlD = "select q014 as totalID from tblModule1 where dataid= '"
+		String sqlD = "select q014 as totalID from tblMainQues where dataid= '"
 				+ CommonStaticClass.dataId + "'";
 
 		Cursor dCursor = dbHelper.getQueryCursor(sqlD);
@@ -40273,7 +40322,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		goNxt.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				int iCount = Integer.parseInt(CommonStaticClass.getSkip("q014",
-						"tblModule1", dbHelper));
+						"tblMainQues", dbHelper));
 				int aa = lvshowAll.getCount();
 
 				if (aa != iCount) {
@@ -40283,9 +40332,9 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				}
 
 				int Count36 = Integer.parseInt(CommonStaticClass.getSkip(
-						"q013", "tblModule1", dbHelper));
+						"q013", "tblMainQues", dbHelper));
 				int iCount60 = Integer.parseInt(CommonStaticClass.getSkip(
-						"q013a", "tblModule1", dbHelper));
+						"q013a", "tblMainQues", dbHelper));
 
 				String a1 = CommonStaticClass.getSkip("sum(a1)", "tblHHCensus",
 						dbHelper);
@@ -40485,7 +40534,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		IDList = new ArrayList<String>();
 		IDList.add(".....Select Child.....");
 
-		String sqlD = "select q013a as totalID from tblModule1 where dataid= '"
+		String sqlD = "select q013a as totalID from tblMainQues where dataid= '"
 				+ CommonStaticClass.dataId + "'";
 
 		Cursor dCursor = dbHelper.getQueryCursor(sqlD);
@@ -41068,7 +41117,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		goNxt.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				int iCount = Integer.parseInt(CommonStaticClass.getSkip(
-						"q013a", "tblModule1", dbHelper));
+						"q013a", "tblMainQues", dbHelper));
 				int aa = lvshowAll.getCount();
 
 				if (aa != iCount) {
@@ -41128,6 +41177,239 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				resetViewGroup((ViewGroup) v);
 			}
 		});
+	}
+	
+	public void loadPrevdata()
+	{
+		
+		String sql1,sql2,sql3 = "";
+		
+		sql1 = "Select * from frmrtblMainQues where dataid='" + CommonStaticClass.dataId + "'";	
+		//sql1 = "Select q5_1,q5_2,q5_3,q5_4,q5_5,q5_6 from tblMainQues where dataid='" + CommonStaticClass.dataId + "'";
+		sql2 = "Select * from frmrtblMainQuesSc where dataid='" + CommonStaticClass.dataId + "'";
+		sql3 = "Select * from frmrtblModule1 where dataid='" + CommonStaticClass.dataId + "'";
+		Cursor mCursor1 = null;
+		Cursor mCursor2 = null;
+		Cursor mCursor3 = null;
+		
+		
+		try {
+			mCursor1 = dbHelper.getQueryCursor(sql1);
+
+			if (mCursor1 != null && mCursor1.getCount() > 0) {
+				
+					mCursor1.moveToFirst();
+					
+					CommonStaticClass.q4001 = mCursor1.getString(mCursor1.getColumnIndex("q4001"));
+					CommonStaticClass.q4002 = mCursor1.getString(mCursor1.getColumnIndex("endq4002"));
+					CommonStaticClass.q4006 = mCursor1.getString(mCursor1.getColumnIndex("q4006"));
+					CommonStaticClass.q4007 = mCursor1.getString(mCursor1.getColumnIndex("q4007"));
+					CommonStaticClass.q4008 = mCursor1.getString(mCursor1.getColumnIndex("q4008"));
+					CommonStaticClass.q4009 = mCursor1.getString(mCursor1.getColumnIndex("q4009"));
+					CommonStaticClass.q4010 = mCursor1.getString(mCursor1.getColumnIndex("q4010"));
+					CommonStaticClass.q4011 = mCursor1.getString(mCursor1.getColumnIndex("q4011"));
+					CommonStaticClass.q4012 = mCursor1.getString(mCursor1.getColumnIndex("q4012"));
+					CommonStaticClass.q4013 = mCursor1.getString(mCursor1.getColumnIndex("q4013"));
+					CommonStaticClass.q4014 = mCursor1.getString(mCursor1.getColumnIndex("q4014"));
+					CommonStaticClass.q4015 = mCursor1.getString(mCursor1.getColumnIndex("motherid"));
+					CommonStaticClass.q4016 = mCursor1.getString(mCursor1.getColumnIndex("houseid"));
+					CommonStaticClass.q101 = mCursor1.getString(mCursor1.getColumnIndex("q101"));
+					/*CommonStaticClass.q013 = mCursor1.getString(mCursor1.getColumnIndex("q013"));
+					CommonStaticClass.q013a = mCursor1.getString(mCursor1.getColumnIndex("q013a"));
+					CommonStaticClass.q014 = mCursor1.getString(mCursor1.getColumnIndex("q014"));*/
+					
+					//choiceValue = Integer.parseInt(mCursor1.getString(mCursor1.getColumnIndex(quesName)));
+						
+				
+					
+				}	
+			
+			mCursor2 = dbHelper.getQueryCursor(sql2);
+
+			if (mCursor2 != null && mCursor2.getCount() > 0) {
+				
+					mCursor2.moveToFirst();
+					
+					CommonStaticClass.q102 = Integer.parseInt(mCursor2.getString(mCursor2.getColumnIndex("q102")));
+					
+					
+					
+					
+					//choiceValue = Integer.parseInt(mCursor1.getString(mCursor1.getColumnIndex(quesName)));
+						
+				
+					
+				}	
+			
+			mCursor3 = dbHelper.getQueryCursor(sql3);
+
+			if (mCursor3 != null && mCursor3.getCount() > 0) {
+				
+					mCursor3.moveToFirst();
+					
+					CommonStaticClass.q013 = mCursor3.getString(mCursor3.getColumnIndex("q013"));
+					CommonStaticClass.q013a = mCursor3.getString(mCursor3.getColumnIndex("q013a"));
+					CommonStaticClass.q014 = mCursor3.getString(mCursor3.getColumnIndex("q014"));					
+					
+					
+					//choiceValue = Integer.parseInt(mCursor1.getString(mCursor1.getColumnIndex(quesName)));
+						
+				
+					
+				}
+			} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			if (mCursor1 != null)
+				mCursor1.close();
+			if (mCursor2 != null)
+				mCursor2.close();
+			if (mCursor3 != null)
+				mCursor3.close();
+			
+		}
+		
+	}
+	public void loadPrevHHCensusData()
+	{
+		String sql1,sql2,sql3 = "";
+		
+		sql1 = "Select * from frmrtblHHCensus where dataid='" + CommonStaticClass.dataId + "'";	
+//		//sql1 = "Select q5_1,q5_2,q5_3,q5_4,q5_5,q5_6 from tblMainQues where dataid='" + CommonStaticClass.dataId + "'";
+//		sql2 = "Select * from frmrtblMainQuesSc where dataid='" + CommonStaticClass.dataId + "'";
+//		sql3 = "Select * from frmrtblModule1 where dataid='" + CommonStaticClass.dataId + "'";
+		Cursor mCursor1 = null;
+		Cursor mCursor2 = null;
+//		Cursor mCursor3 = null;
+		
+		
+		try {
+			mCursor1 = dbHelper.getQueryCursor(sql1);
+
+			if (mCursor1 != null && mCursor1.getCount() > 0) {
+				
+					mCursor1.moveToFirst();
+					
+					 do{
+						 sql2 = "Insert into tblHHCensus (dataid,hhno,a1,a2,a3,EntryBy,EntryDate,AssetId)"
+									+ "VALUES ('"
+									+ mCursor1.getString(mCursor1.getColumnIndex("dataid"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("hhno"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("a1"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("a2"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("a3"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("EntryBy"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("EntryDate"))
+									+ "','"
+									+ mCursor1.getString(mCursor1.getColumnIndex("AssetId"))
+									+ "')";;
+						 mCursor2 = null;
+						 boolean insertHHcensus = dbHelper.executeDMLQuery(sql2);
+					     
+					    }while(mCursor1.moveToNext());
+					
+				
+				
+					
+				}	
+		
+			
+			
+			} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			if (mCursor1 != null)
+				mCursor1.close();
+			if (mCursor2 != null)
+				mCursor2.close();
+
+			
+		}
+		
+	}
+	
+	public void loadPrevChildInfoData()
+	{
+		String sql1,sql2,sql3 = "";
+		
+		sql1 = "Select * from frmrtblChildInformation where dataid='" + CommonStaticClass.dataId + "'";	
+//		//sql1 = "Select q5_1,q5_2,q5_3,q5_4,q5_5,q5_6 from tblMainQues where dataid='" + CommonStaticClass.dataId + "'";
+//		sql2 = "Select * from frmrtblMainQuesSc where dataid='" + CommonStaticClass.dataId + "'";
+//		sql3 = "Select * from frmrtblModule1 where dataid='" + CommonStaticClass.dataId + "'";
+		Cursor mCursor1 = null;
+		Cursor mCursor2 = null;
+//		Cursor mCursor3 = null;
+		
+		
+		try {
+			mCursor1 = dbHelper.getQueryCursor(sql1);
+
+			if (mCursor1 != null && mCursor1.getCount() > 0) {
+				
+					mCursor1.moveToFirst();
+					
+					 do{
+						 sql2 = "Insert into tblChildInformation (dataid,childno,Name,Sex,"
+													+ "AgeMonth,dob,sourcedob,birthorder," +
+													"spilloverchild,spillovermochild,assetid,EntryBy,EntryDate)"
+													+ "VALUES ('"
+													+ mCursor1.getString(mCursor1.getColumnIndex("dataid"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("childno"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("Name"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("Sex"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("AgeMonth"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("dob"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("sourcedob"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("birthorder"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("spilloverchild"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("spillovermochild"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("AssetId"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("EntryBy"))
+													+ "','"
+													+ mCursor1.getString(mCursor1.getColumnIndex("EntryDate")) + "')";
+						 mCursor2 = null;
+						 boolean insertHHcensus = dbHelper.executeDMLQuery(sql2);
+					     
+					    }while(mCursor1.moveToNext());
+					
+				
+				
+					
+				}	
+		
+			
+			
+			} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			if (mCursor1 != null)
+				mCursor1.close();
+			if (mCursor2 != null)
+				mCursor2.close();
+
+			
+		}
+		
 	}
 
 }
