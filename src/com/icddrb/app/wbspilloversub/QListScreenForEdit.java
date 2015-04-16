@@ -446,10 +446,15 @@ public class QListScreenForEdit extends BaseActivity {
 		String sql = "";
 		if (!CommonStaticClass.isMember)
 			sql = "Select SLNo,Qvar,Qdescbng,Qdesceng from tblQuestion where Qvar not in('qdir','q201','q202','q203','q204','q205','q206','q207','q208','q209','q210','q211','q212','q213'"
-						+ ",'c301','c302','c302_other','c303','c304','qdworm1m','c305_1','c305_2','c305_3','c305_4') order by SLNo asc";
+			+ ") order by SLNo asc";
+//			sql = "Select SLNo,Qvar,Qdescbng,Qdesceng from tblQuestion where Qvar not in('qdir','q201','q202','q203','q204','q205','q206','q207','q208','q209','q210','q211','q212','q213'"
+//						+ ",'c301','c302','c302_other','c303','c304','qdworm1m','c305_1','c305_2','c305_3','c305_4') order by SLNo asc";
 		else
 			sql = "Select SLNo,Qvar,Qdescbng,Qdesceng from tblQuestion where Qvar not in('qdir','q201','q202','q203','q204','q205','q206','q207','q208','q209','q210','q211','q212','q213'"
-					+ ",'c301','c302','c302_other','c303','c304','qdworm1m','c305_1','c305_2','c305_3','c305_4') order by SLNo asc";
+					+ ") order by SLNo asc";
+			
+//			sql = "Select SLNo,Qvar,Qdescbng,Qdesceng from tblQuestion where Qvar not in('qdir','q201','q202','q203','q204','q205','q206','q207','q208','q209','q210','q211','q212','q213'"
+//					+ ",'c301','c302','c302_other','c303','c304','qdworm1m','c305_1','c305_2','c305_3','c305_4') order by SLNo asc";
 		Cursor mCursor = null;
 		try {
 			mCursor = dbHelper.getQueryCursor(sql);

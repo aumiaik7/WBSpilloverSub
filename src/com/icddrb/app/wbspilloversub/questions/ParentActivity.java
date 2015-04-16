@@ -80,6 +80,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+
 import com.icddrb.app.wbspilloversub.BaseActivity;
 import com.icddrb.app.wbspilloversub.CommonStaticClass;
 import com.icddrb.app.wbspilloversub.Options;
@@ -2438,7 +2439,12 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 				|| CommonStaticClass.questionMap
 						.get(CommonStaticClass.currentSLNo).getQvar()
-						.equalsIgnoreCase("Enumname")) {
+						.equalsIgnoreCase("Enumname")
+						
+				|| CommonStaticClass.questionMap
+				.get(CommonStaticClass.currentSLNo).getQvar()
+				.equalsIgnoreCase("ss103")
+				) {
 
 			// for Reading data from a specific table like user, member etc.
 			Cursor mCursor = null;
@@ -2457,6 +2463,12 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						.get(CommonStaticClass.currentSLNo).getQvar()
 						.equalsIgnoreCase("q011"))
 					sql = String.format("Select * from tblOccupation");
+				
+				else if (CommonStaticClass.questionMap
+						.get(CommonStaticClass.currentSLNo).getQvar()
+						.equalsIgnoreCase("ss103"))
+					sql = String.format("Select * from tblChildInformation where dataid =  '%s' and spilloverchild < '%s'",
+									CommonStaticClass.dataId,'2');
 
 				else if (CommonStaticClass.questionMap
 						.get(CommonStaticClass.currentSLNo).getQvar()
@@ -2600,6 +2612,24 @@ public class ParentActivity extends BaseActivity implements FormListener {
 											.getColumnIndex("UpazilaName")));
 							userIDs.add(mCursor.getString(mCursor
 									.getColumnIndex("UpazilaCode")));
+
+						}
+						
+						else if (CommonStaticClass.questionMap
+								.get(CommonStaticClass.currentSLNo).getQvar()
+								.equalsIgnoreCase("ss103")) {
+							if(mCursor.getCount() == 0)
+							{
+								CommonStaticClass.showFinalAlert(con, "There is no other child that can be " +
+										"selected as spilloverchild. Do you want to Exit? ");
+							}
+							users.add(mCursor.getString(mCursor
+									.getColumnIndex("childno"))
+									+ " : "
+									+ mCursor.getString(mCursor
+											.getColumnIndex("Name")));
+							userIDs.add(mCursor.getString(mCursor
+									.getColumnIndex("childno")));
 
 						}
 
@@ -2902,6 +2932,10 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							|| CommonStaticClass.questionMap
 									.get(CommonStaticClass.currentSLNo)
 									.getQvar().equalsIgnoreCase("q011")
+									
+							|| CommonStaticClass.questionMap
+									.get(CommonStaticClass.currentSLNo)
+									.getQvar().equalsIgnoreCase("ss103")
 							|| CommonStaticClass.questionMap
 									.get(CommonStaticClass.currentSLNo)
 									.getQvar()
@@ -2924,6 +2958,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 					else
 						sResCode = op.codeList.get(pos).toString();
 				}
+				else 
+					sResCode = "";
 
 			}
 
@@ -3012,7 +3048,11 @@ public class ParentActivity extends BaseActivity implements FormListener {
 									|| CommonStaticClass.questionMap
 											.get(CommonStaticClass.currentSLNo)
 											.getQvar()
-											.equalsIgnoreCase("q4001"))
+											.equalsIgnoreCase("q4001")
+									|| CommonStaticClass.questionMap
+											.get(CommonStaticClass.currentSLNo)
+											.getQvar()
+											.equalsIgnoreCase("ss103"))
 
 								index = CommonStaticClass
 										.GetIndexFromCollection(userIDs, a);
@@ -3301,6 +3341,12 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						+ CommonStaticClass.dataId + "'";
 
 			dbHelper.executeDMLQuery(sql);
+			if(CommonStaticClass.questionMap
+					.get(CommonStaticClass.currentSLNo).getQvar()
+					.equalsIgnoreCase("ss103"))
+			{
+				updatetblChildInformation();
+			}
 
 			if (CommonStaticClass.questionMap
 					.get(CommonStaticClass.currentSLNo).getQvar()
@@ -17689,7 +17735,18 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				ln.setWeightSum((float) 2.0);
 				final EditText edbox = new EditText(this);
 				edbox.setId(i);
-				edList.put(i, edbox);
+				
+				//only for this project by imtiaz khan
+				if(qName.equalsIgnoreCase("n117") || qName.equalsIgnoreCase("n126_1")
+						|| qName.equalsIgnoreCase("n126_2"))
+				{
+					edbox.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+					edList.put(i, edbox);
+					layoutParamForcheck.weight = 1;
+					layoutParamForTextBox.weight = 1;
+				}
+				else
+					edList.put(i, edbox);
 				layoutParamForcheck.weight = 1;
 				layoutParamForTextBox.weight = 1;
 
@@ -18881,7 +18938,17 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							CommonStaticClass.nextQuestion(ParentActivity.this);
 						}
 
-					} else if (qName.equalsIgnoreCase("q723a")) {
+					} 
+					
+					else if ((qName.equalsIgnoreCase("n126_1") || qName.equalsIgnoreCase("n126_2")) 
+							 && aaa.get(0) == 1) {
+						
+							CommonStaticClass.findOutNextSLNo(
+									qName,qName+"Other");
+							CommonStaticClass.nextQuestion(ParentActivity.this);
+						
+					}
+					else if (qName.equalsIgnoreCase("q723a")) {
 						// getSkip("q903_7","tblMainquesMC");
 						getSkip723a("q723a_1", "q723a_2", "q723a_3", "q723a_4",
 								"q723a_5", "q723a_6", "q723a_7", "q723a_8",
@@ -21557,12 +21624,21 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				return;
 			}
 		}
-		if (qName.equalsIgnoreCase("q002") || qName.equalsIgnoreCase("q005")) {
+		if (qName.equalsIgnoreCase("n106") || qName.equalsIgnoreCase("q005")) {
 			if (qAns.trim().length() != 11) {
 				CommonStaticClass.showMyAlert(con, "Not Correct",
 						"Answer not correct");
 				return;
 			}
+		}
+		if ((qName.equalsIgnoreCase("n109") || qName.equalsIgnoreCase("n110"))
+				&& ( Integer.parseInt(qAns)> 18 && Integer.parseInt(qAns) != 999)
+				) {
+			
+				CommonStaticClass.showMyAlert(con, "Not Correct",
+						"Answer not correct");
+				return;
+			
 		}
 		if (qName.equalsIgnoreCase("q4019b")) {
 			if (Integer.parseInt(qAns) >= 1) {
@@ -23682,6 +23758,10 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		try {
 
 			if (code != -1) {
+				if (qName.equalsIgnoreCase("ss102") && code == 1)
+				{
+					updatetblChildInformationForSpill();
+				}
 
 				if (qName.equalsIgnoreCase("g5113b")
 						|| qName.equalsIgnoreCase("qdir")
@@ -23719,6 +23799,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							+ "='" + code + "' where dataid='"
 							+ CommonStaticClass.dataId + "' and childno='"
 							+ CommonStaticClass.childID + "'";
+				
 				else if (!CommonStaticClass.isMember)
 					sql = "UPDATE "
 							+ CommonStaticClass.questionMap.get(
@@ -28985,6 +29066,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							CommonStaticClass.nextQuestion(ParentActivity.this);
 						}
 					}
+					
 
 					// ///////////////////////////
 
@@ -41408,6 +41490,42 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				mCursor2.close();
 
 			
+		}
+		
+	}
+	
+	public void updatetblChildInformationForSpill()
+	{
+		
+		
+		String sql = String.format("Update tblChildInformation set spilloverchild = '%s' " +
+				"where dataid =  '%s' and spilloverchild = '%s'",'2', CommonStaticClass.dataId,'1');
+	
+		
+		try {
+			boolean updated = dbHelper.executeDMLQuery(sql);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		
+	}
+	public void updatetblChildInformation()
+	{
+		
+		
+		
+	
+		String sql2 = String.format("Update tblChildInformation set spilloverchild = '%s' " +
+				"where dataid =  '%s' and childno = '%s'",'1', CommonStaticClass.dataId,sResCode);
+		
+		try {
+			
+			boolean updated2 = dbHelper.executeDMLQuery(sql2);
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
 		}
 		
 	}
