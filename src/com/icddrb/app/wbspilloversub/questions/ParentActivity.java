@@ -2530,7 +2530,23 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				mCursor = dbHelper.getQueryCursor(sql);
 				if (mCursor.moveToFirst()) {
 					do {
+						
 						if (CommonStaticClass.questionMap
+								.get(CommonStaticClass.currentSLNo).getQvar()
+								.equalsIgnoreCase("ss103")) {
+							
+								users.add(mCursor.getString(mCursor
+										.getColumnIndex("childno"))
+										+ " : "
+										+ mCursor.getString(mCursor
+												.getColumnIndex("Name")));
+								userIDs.add(mCursor.getString(mCursor
+										.getColumnIndex("childno")));
+
+							
+							
+						}
+						else if (CommonStaticClass.questionMap
 								.get(CommonStaticClass.currentSLNo).getQvar()
 								.equalsIgnoreCase("q4001"))
 
@@ -2615,23 +2631,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 						}
 						
-						else if (CommonStaticClass.questionMap
-								.get(CommonStaticClass.currentSLNo).getQvar()
-								.equalsIgnoreCase("ss103")) {
-							if(mCursor.getCount() == 0)
-							{
-								CommonStaticClass.showFinalAlert(con, "There is no other child that can be " +
-										"selected as spilloverchild. Do you want to Exit? ");
-							}
-							users.add(mCursor.getString(mCursor
-									.getColumnIndex("childno"))
-									+ " : "
-									+ mCursor.getString(mCursor
-											.getColumnIndex("Name")));
-							userIDs.add(mCursor.getString(mCursor
-									.getColumnIndex("childno")));
-
-						}
+						
 
 						else if (CommonStaticClass.questionMap
 								.get(CommonStaticClass.currentSLNo).getQvar()
@@ -2734,6 +2734,15 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 						}
 					} while (mCursor.moveToNext());
+				}
+				else if(CommonStaticClass.questionMap
+				.get(CommonStaticClass.currentSLNo).getQvar()
+				.equalsIgnoreCase("ss103") && mCursor.getCount() == 0)
+				{
+					
+						showUserFinishDialogFrmSingleChoice();
+					
+					
 				}
 				// Code: sadia (customize 407)
 
@@ -17331,7 +17340,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							 * (bdCursor.moveToNext()); } }
 							 */
 							String sqlD = "select  count (*) as Total from tblChildInformation where  dataid= '"
-									+ CommonStaticClass.dataId + "'";
+									+ CommonStaticClass.dataId + "' and spilloverchild < 2";
 							Cursor adCursor = dbHelper.getQueryCursor(sqlD);
 							if (adCursor.moveToFirst()) {
 								do {
@@ -17342,7 +17351,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 							}
 
 							sqlD = "select count() as Total from tblChildHealthInfo where dataid= '"
-									+ CommonStaticClass.dataId + "'";
+									+ CommonStaticClass.dataId+ "'"; 
 							Cursor dCursor = dbHelper.getQueryCursor(sqlD);
 							if (dCursor.moveToFirst()) {
 								do {
@@ -17426,7 +17435,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 								 * "ENDM"); CommonStaticClass
 								 * .nextQuestion(ParentActivity.this); } else
 								 */
-								CommonStaticClass.findOutNextSLNo(qName, "qd");
+								CommonStaticClass.findOutNextSLNo(qName, "msgmod3");
 								CommonStaticClass
 										.nextQuestion(ParentActivity.this);
 								/*
@@ -29306,6 +29315,13 @@ public class ParentActivity extends BaseActivity implements FormListener {
 
 		final TextView textInfo = (TextView) promptsView
 				.findViewById(R.id.textView1);
+		if(CommonStaticClass.questionMap
+				.get(CommonStaticClass.currentSLNo).getQvar()
+				.equalsIgnoreCase("ss103"))
+		{
+			textInfo.setText("No more spillover child. Do u want to finish this cycle?");
+		}
+		else 
 		textInfo.setText("Do u want to finish this cycle?");
 
 		// set dialog message
@@ -31009,7 +31025,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 				 */
 
 				String sqlD = "select  count (*) as Total from tblChildInformation where  dataid= '"
-						+ CommonStaticClass.dataId + "'";
+						+ CommonStaticClass.dataId + "' and spilloverchild < 2";
 				Cursor adCursor = dbHelper.getQueryCursor(sqlD);
 				if (adCursor.moveToFirst()) {
 					do {
@@ -31147,6 +31163,20 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		}
 
 	}
+	private static void resetViewGroupNewChild(ViewGroup viewGroup) {
+		int nrOfChildren = viewGroup.getChildCount();
+		for (int i = 0; i < nrOfChildren; i++) {
+			View view = viewGroup.getChildAt(i);
+			resetViewNewChild(view);
+			if (view instanceof ViewGroup) {
+				resetViewGroupNewChild((ViewGroup) view);
+			}
+			if (view instanceof RadioGroup) {
+				((RadioGroup) view).clearCheck();
+			}
+		}
+
+	}
 
 	private static void resetView(View view) {
 
@@ -31167,6 +31197,27 @@ public class ParentActivity extends BaseActivity implements FormListener {
 			((RadioGroup) view).clearCheck();
 		}
 	}
+	private static void resetViewNewChild(View view) {
+
+		/*if (view instanceof Spinner) {
+			((Spinner) view).setSelection(0);
+		}*/
+
+		if (view instanceof RadioButton) {
+			((RadioButton) view).setChecked(false);
+		}
+		if (view instanceof CheckBox) {
+			((CheckBox) view).setChecked(false);
+		}
+		if (view instanceof EditText) {
+			((EditText) view).setText("");
+		}
+		if (view instanceof RadioGroup) {
+			((RadioGroup) view).clearCheck();
+		}
+	}
+	
+	
 
 	// Check for empty Field
 	private static boolean CheckEmptyViewGroup(ViewGroup viewGroup) {
@@ -39823,8 +39874,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 											 */
 
 			String allSQL = "select  childno , Name,spilloverchild from tblChildInformation where  dataid = '"
-					+ CommonStaticClass.dataId
-					+ "'  ORDER BY CAST(childno AS INTEGER)";
+					+ CommonStaticClass.dataId 
+					+ "' and spilloverchild != 2  ORDER BY CAST(childno AS INTEGER)";
 			Cursor allCursor1 = null;
 			try {
 
@@ -40729,7 +40780,8 @@ public class ParentActivity extends BaseActivity implements FormListener {
 						} while (dCursor.moveToNext());
 					} else {
 
-						// resetViewGroup((ViewGroup) v);
+						
+						resetViewGroupNewChild((ViewGroup) v);
 						saveNxtButton.setText("Save");
 						IsUpdateMood = false;
 					}
@@ -41468,6 +41520,12 @@ public class ParentActivity extends BaseActivity implements FormListener {
 													+ mCursor1.getString(mCursor1.getColumnIndex("EntryBy"))
 													+ "','"
 													+ mCursor1.getString(mCursor1.getColumnIndex("EntryDate")) + "')";
+						 
+						 if(Integer.parseInt(mCursor1.getString(mCursor1.getColumnIndex("spilloverchild"))) == 1)
+						 
+						 {
+							 CommonStaticClass.spilloverChildID = mCursor1.getString(mCursor1.getColumnIndex("childno"));
+						 }
 						 mCursor2 = null;
 						 boolean insertHHcensus = dbHelper.executeDMLQuery(sql2);
 					     
@@ -41499,7 +41557,7 @@ public class ParentActivity extends BaseActivity implements FormListener {
 		
 		
 		String sql = String.format("Update tblChildInformation set spilloverchild = '%s' " +
-				"where dataid =  '%s' and spilloverchild = '%s'",'2', CommonStaticClass.dataId,'1');
+				"where dataid =  '%s' and childno = '%s'",'2', CommonStaticClass.dataId,CommonStaticClass.spilloverChildID);
 	
 		
 		try {
